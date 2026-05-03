@@ -3,7 +3,7 @@
 지원 형상: 철판(flat plate), 파이프(pipe)
 지원 이음 유형: 맞대기(butt), T-이음(T-joint), 파이프-판(pipe-on-plate), 파이프-파이프(pipe-butt)
 """
-
+import os, argparse
 import open3d as o3d
 import numpy as np
 from dataclasses import dataclass, field
@@ -61,8 +61,8 @@ def _make_pipe_mesh(radius: float, length: float, thickness: float,
         radius=radius, height=length, resolution=resolution, split=4)
     # create_cylinder 은 이미 Z 중심 정렬 → 추가 이동 불필요
     return outer
-
-
+    
+    
 def _sample_and_noise(mesh: o3d.geometry.TriangleMesh, n: int,
                       noise_std: float, rng: np.random.Generator
                       ) -> o3d.geometry.PointCloud:
@@ -276,7 +276,6 @@ def save(scene_pcd: o3d.geometry.PointCloud,
          seam_pts: np.ndarray,
          out_dir: str = "output",
          prefix: str = "scene"):
-    import os
     os.makedirs(out_dir, exist_ok=True)
 
     pcd_path  = os.path.join(out_dir, f"{prefix}.pcd")
@@ -292,7 +291,6 @@ def save(scene_pcd: o3d.geometry.PointCloud,
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
-    import argparse
 
     parser = argparse.ArgumentParser(description="용접 합성 씬 생성기")
     parser.add_argument("--joint", choices=[j.value for j in JointType],
